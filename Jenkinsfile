@@ -2,7 +2,7 @@ pipeline {
   agent any
   environment {
     PATH = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
-    SONAR_TOKEN = credentials('ca9342f28bb1c815c10babc4ccb93e14a33059a9')
+    SONAR_TOKEN = credentials('b102ee90f5192b1bbdb45f453cc530260453a882')
   }
   stages {
     stage('Checkout') { steps { git branch: 'main', url: 'https://github.com/pramodyasenadheera/8.2CDevSecOps.git' } }
