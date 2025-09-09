@@ -1,15 +1,36 @@
 pipeline {
   agent any
+
   environment {
+    // Make sure npm is on PATH (macOS Homebrew paths)
     PATH = "/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
+    // Pull the secret from Jenkins Credentials (ID must match)
     SONAR_TOKEN = credentials('b102ee90f5192b1bbdb45f453cc530260453a882')
   }
+
   stages {
-    stage('Checkout') { steps { git branch: 'main', url: 'https://github.com/pramodyasenadheera/8.2CDevSecOps.git' } }
-    stage('Install Dependencies') { steps { sh 'npm install' } }
-    stage('Run Tests') { steps { sh 'npm test || true' } }
-    stage('Generate Coverage Report') { steps { sh 'npm run coverage || true' } }
-    stage('NPM Audit (Security Scan)') { steps { sh 'npm audit || true' } }
+    stage('Checkout') {
+      steps {
+        git branch: 'main', url: 'https://github.com/pramodyasenadheera/8.2CDevSecOps.git'
+      }
+    }
+
+    stage('Install Dependencies') {
+      steps { sh 'npm install' }
+    }
+
+    stage('Run Tests') {
+      steps { sh 'npm test || true' }
+    }
+
+    stage('Generate Coverage Report') {
+      steps { sh 'npm run coverage || true' }
+    }
+
+    stage('NPM Audit (Security Scan)') {
+      steps { sh 'npm audit || true' }
+    }
+
     stage('SonarCloud Analysis') {
       steps {
         sh '''
