@@ -2,8 +2,8 @@ pipeline {
   agent any
 
   environment {
-    JAVA_HOME = "/opt/homebrew/opt/openjdk@17"
-    PATH = "$JAVA_HOME/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
+    JAVA_HOME   = "/opt/homebrew/opt/openjdk@17"
+    PATH        = "$JAVA_HOME/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
     SONAR_TOKEN = credentials('SONAR_TOKEN')
   }
 
@@ -14,12 +14,14 @@ pipeline {
       }
     }
     stage('Env Check') {
-  steps {
-    sh 'echo JAVA_HOME=$JAVA_HOME && java -version'
-  }
-}
+      steps {
+        sh 'echo JAVA_HOME=$JAVA_HOME && java -version'
+      }
+    }
     stage('Install') {
-      steps { sh 'npm install' }
+      steps {
+        sh 'npm install'
+      }
     }
   }
 }
