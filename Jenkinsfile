@@ -2,9 +2,11 @@ pipeline {
   agent any
 
   environment {
-    // Java 17 for the scanner
+    // macOS + Homebrew Java 17
     JAVA_HOME = "/opt/homebrew/opt/openjdk@17"
     PATH = "${JAVA_HOME}/bin:/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
+    SONAR_TOKEN = credentials('SONAR_TOKEN')   // your Jenkins secret
+    SONAR_SCANNER_VERSION = "5.0.1.3006"
   }
 
   stages {
@@ -14,39 +16,38 @@ pipeline {
       }
     }
 
+    stage('Env Check') {
+      steps {
+        sh 'echo JAVA_HOME=$JAVA_HOME && java -version || true'
+        sh 'node -v && npm -v || true'
+      }
+    }
+
     stage('Install') {
       steps {
         sh 'npm install'
       }
     }
 
-    stage('Setup SonarScanner') {
+    stage('Tests & Coverage') {
       steps {
-        sh '''
-          set -eux
-          SCAN_VER=5.0.1.3006      # macOS build of the current CLI
-          mkdir -p .scanner
-          cd .scanner
-
-          # Download only if not already cached in workspace
-          if [ ! -d "sonar-scanner-${SCAN_VER}-macosx" ]; then
-            curl -sSLo sonar-scanner.zip \
-              "https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SCAN_VER}-macosx.zip"
-            unzip -q sonar-scanner.zip
-          fi
-        '''
+        // adapt these to your package.json scripts if needed
+        sh 'npm test || true'
+        sh 'npm run coverage || true'
       }
     }
 
-    stage('SonarCloud Analysis') {
+    stage('SonarCloud Analysis (wait for Quality Gate)') {
       steps {
-        withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SONAR_TOKEN')]) {
+        withCredentials([string(credentialsId: 'SONAR_TOKEN', variable: 'SC_TOKEN')]) {
           sh '''
-            set -eux
-            .scanner/sonar-scanner-*/bin/sonar-scanner \
-              -Dsonar.organization=pramodyasenadheera \
-              -Dsonar.projectKey=pramodyasenadheera_8.2CDevSecOps \
-              -Dsonar.login=$SONAR_TOKEN
+            set -e
+            rm -rf sonar-scanner-*
+            curl -sSL -o sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-${SONAR_SCANNER_VERSION}-macosx.zip
+            unzip -q sonar-scanner.zip
+            ./sonar-scanner-*/bin/sonar-scanner \
+              -Dsonar.login=$SC_TOKEN \
+              -Dsonar.qualitygate.wait=true
           '''
         }
       }
