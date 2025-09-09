@@ -4,7 +4,7 @@ pipeline {
   environment {
     JAVA_HOME = "/opt/homebrew/opt/openjdk@17"
     PATH = "$JAVA_HOME/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
-    SONAR_TOKEN = credentials('eb76a58041d0835d570362fe2583ef3e68c8b262')
+    SONAR_TOKEN = credentials('SONAR_TOKEN')
   }
 
   stages {
