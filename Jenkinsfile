@@ -1,11 +1,10 @@
+cat > Jenkinsfile <<'EOF'
 pipeline {
   agent any
 
   environment {
-    // If you installed Temurin 17 via: brew install --cask temurin17
+    // Pick ONE of the following JAVA_HOME lines.
     JAVA_HOME = "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home"
-
-    // If instead you installed Homebrew openjdk@17, use this line and remove the Temurin one:
     // JAVA_HOME = "/opt/homebrew/opt/openjdk@17"
 
     PATH = "${JAVA_HOME}/bin:/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
@@ -13,11 +12,34 @@ pipeline {
   }
 
   stages {
-    stage('Checkout')            { steps { git branch: 'main', url: 'https://github.com/pramodyasenadheera/8.2CDevSecOps.git' } }
-    stage('Install Dependencies'){ steps { sh 'npm install' } }
-    stage('Run Tests')           { steps { sh 'npm test || true' } }
-    stage('Generate Coverage')   { steps { sh 'npm run coverage || true' } }
-    stage('NPM Audit (Security)'){ steps { sh 'npm audit || true' } }
+    stage('Checkout') {
+      steps {
+        git branch: 'main', url: 'https://github.com/pramodyasenadheera/8.2CDevSecOps.git'
+      }
+    }
+
+    stage('Env Check') {
+      steps {
+        sh 'java -version && node -v && npm -v'
+      }
+    }
+
+    stage('Install Dependencies') {
+      steps { sh 'npm install' }
+    }
+
+    stage('Run Tests') {
+      steps { sh 'npm test || true' }
+    }
+
+    stage('Generate Coverage') {
+      steps { sh 'npm run coverage || true' }
+    }
+
+    stage('NPM Audit (Security)') {
+      steps { sh 'npm audit || true' }
+    }
+
     stage('SonarCloud Analysis') {
       steps {
         sh '''
@@ -31,6 +53,4 @@ pipeline {
     }
   }
 }
-
-
-
+EOF
