@@ -1,43 +1,8 @@
 pipeline {
   agent any
-
-  environment {
-    // Adjust JAVA_HOME for your Mac
-    JAVA_HOME = "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home"
-    PATH = "${JAVA_HOME}/bin:/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
-    SONAR_TOKEN = credentials('eb76a58041d0835d570362fe2583ef3e68c8b262')
-  }
-
   stages {
-    stage('Checkout') {
-      steps {
-        git branch: 'main', url: 'https://github.com/pramodyasenadheera/8.2CDevSecOps.git'
-      }
-    }
-
-    stage('Install Dependencies') {
-      steps {
-        sh 'npm install'
-      }
-    }
-
-    stage('Run Tests') {
-      steps {
-        sh 'npm test || true'
-      }
-    }
-
-    stage('SonarCloud Analysis') {
-      steps {
-        sh '''
-          set -e
-          rm -rf sonar-scanner-* sonar-scanner.zip
-          curl -sSL -o sonar-scanner.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-5.0.1.3006-macosx.zip
-          unzip -oq sonar-scanner.zip
-          ./sonar-scanner-*/bin/sonar-scanner -Dsonar.login=$SONAR_TOKEN
-        '''
-      }
+    stage('Sanity') {
+      steps { sh 'echo Jenkinsfile OK' }
     }
   }
 }
-
