@@ -2,8 +2,9 @@ pipeline {
   agent any
 
   environment {
+    // Adjust JAVA_HOME for your Mac
     JAVA_HOME = "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home"
-    PATH = "$JAVA_HOME/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
+    PATH = "${JAVA_HOME}/bin:/opt/homebrew/bin:/usr/local/bin:${env.PATH}"
     SONAR_TOKEN = credentials('eb76a58041d0835d570362fe2583ef3e68c8b262')
   }
 
@@ -39,3 +40,4 @@ pipeline {
     }
   }
 }
+
