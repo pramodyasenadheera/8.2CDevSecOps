@@ -14,8 +14,10 @@ pipeline {
       }
     }
     stage('Env Check') {
-      steps { sh 'echo JAVA_HOME=$JAVA_HOME && java -version && node -v && npm -v' }
-    }
+  steps {
+    sh 'echo JAVA_HOME=$JAVA_HOME && java -version'
+  }
+}
     stage('Install') {
       steps { sh 'npm install' }
     }
