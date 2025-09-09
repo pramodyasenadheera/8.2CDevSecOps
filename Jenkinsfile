@@ -2,10 +2,7 @@ pipeline {
   agent any
 
   environment {
-    // choose ONE of these:
-    JAVA_HOME = "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home"
-    // JAVA_HOME = "/opt/homebrew/opt/openjdk@17"
-
+    JAVA_HOME = "/opt/homebrew/opt/openjdk@17"
     PATH = "$JAVA_HOME/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
   }
 
