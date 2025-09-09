@@ -4,7 +4,7 @@ pipeline {
   environment {
     JAVA_HOME = "/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home"
     PATH = "$JAVA_HOME/bin:/opt/homebrew/bin:/usr/local/bin:$PATH"
-    SONAR_TOKEN = credentials('3ae1e8e383c0a894c8793c6b2b4f7204f050bec7')
+    SONAR_TOKEN = credentials('eb76a58041d0835d570362fe2583ef3e68c8b262')
   }
 
   stages {
